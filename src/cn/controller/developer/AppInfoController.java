@@ -1,5 +1,6 @@
 package cn.controller.developer;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
+import com.mysql.jdbc.StringUtils;
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Appinfo;
 
 import cn.pojo.AppCategory;
 import cn.pojo.AppInfo;
 import cn.pojo.DataDictionary;
 import cn.pojo.DevUser;
+import cn.service.backend.AppService;
 import cn.service.developer.AppCategoryService;
 import cn.service.developer.AppInfoService;
 import cn.service.developer.DataDictionaryService;
@@ -35,6 +39,8 @@ public class AppInfoController {
 	private DataDictionaryService dataDictionaryService;
 	@Resource
 	private AppCategoryService appCategoryService;
+	@Resource
+	private AppService appService;
 	
 	@RequestMapping(value="/list")
 	public String appInfoList(Model model,HttpSession session,
@@ -137,11 +143,11 @@ public class AppInfoController {
 		model.addAttribute("queryFlatformId", queryFlatformId);
 		
 		//二级分类列表和三级分类列表---回显
-		if(queryCategoryLevel2 != null && !queryCategoryLevel2.equals("")){
+		if(queryCategoryLevel1 != null && !queryCategoryLevel1.equals("")){
 			categoryLevel2List = getCategoryList(queryCategoryLevel1.toString());
 			model.addAttribute("categoryLevel2List", categoryLevel2List);
 		}
-		if(queryCategoryLevel3 != null && !queryCategoryLevel3.equals("")){
+		if(queryCategoryLevel2 != null && !queryCategoryLevel2.equals("")){
 			categoryLevel3List = getCategoryList(queryCategoryLevel2.toString());
 			model.addAttribute("categoryLevel3List", categoryLevel3List);
 		}
@@ -200,6 +206,27 @@ public class AppInfoController {
 		
 		return this.getDataDictionaryList(tcode);
 	}
+	
+	
+	@RequestMapping(value="/apkexist.json",method=RequestMethod.GET)
+	@ResponseBody
+	public Object apkNameIsExit(@RequestParam String APKName){
+		HashMap<String, String> resultMap=new HashMap<String, String>();
+		if(StringUtils.isNullOrEmpty(APKName)){
+			resultMap.put("APKName", "empty");
+		}else{
+			AppInfo appInfo=null;
+			appInfo=appService.getAppInfo(null, APKName);
+			if(appInfo!=null){
+				resultMap.put("APKName", "exist");
+			}else{
+				resultMap.put("APKName", "noexist");
+			}
+		}
+		return JSONArray.toJSON(resultMap);
+	}
+	
+	
 	
 
 	

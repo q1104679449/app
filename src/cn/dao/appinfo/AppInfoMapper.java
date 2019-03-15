@@ -57,7 +57,7 @@ public interface AppInfoMapper {
 	 * @param APKName	apk√˚≥∆
 	 * @return
 	 */
-	public AppInfo getAppInfo(@Param(value="id")Integer id);
+	public AppInfo getAppInfo(@Param(value="id")Integer id,@Param(value="APKName")String APKName);
 	
 	/**
 	 * …Û∫Àapp

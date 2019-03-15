@@ -74,18 +74,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 		</trim>
 	</select>
-	<select id="getAppInfo" resultType="AppInfo">
+	<select id="getAppInfo" resultType="AppInfo" flushCache="true" useCache="true">
 		select *,
 		(select `valueName` from `data_dictionary` d where d.`valueId`=a.`status` and `typeCode`='APP_FLATFORM' ) flatformName,
 		(SELECT `valueName` FROM `data_dictionary` d WHERE d.`valueId`=a.`status` AND d.`typeCode`='APP_STATUS') AS statusName,
 		(select `categoryName` from `app_category` p where p.`id`=a.`categoryLevel1`) as categoryLevel1Name,
-		(SELECT `categoryName` FROM `app_category` p WHERE p.`id`=a.`categoryLevel2`) AS categoryLeve21Name,
-		(SELECT `categoryName` FROM `app_category` p WHERE p.`id`=a.`categoryLevel3`) AS categoryLeve31Name,
+		(SELECT `categoryName` FROM `app_category` p WHERE p.`id`=a.`categoryLevel2`) as categoryLeve21Name,
+		(SELECT `categoryName` FROM `app_category` p WHERE p.`id`=a.`categoryLevel3`) as categoryLeve31Name,
 		(SELECT v.`versionNo` FROM app_version v where v.`id`=a.`versionId`) as versionNo
 		from `app_info` a
 		<trim prefix="where" prefixOverrides="and | or">
 			<if test="id != null">
 				and a.id=#{id}
+			</if>
+			<if test="APKName!=null and APKName != ''">
+				and a.APKName=#{APKName}
 			</if>
 		</trim>
 	</select>

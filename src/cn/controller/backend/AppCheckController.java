@@ -194,10 +194,10 @@ public class AppCheckController {
 	
 	@RequestMapping(value="/check/{aid}/{vid}")
 	public String check(@PathVariable String aid,@PathVariable String vid,Model model){
-		AppInfo appInfo = null;
-		appInfo=appService.getAppInfo(Integer.parseInt(aid));
-		AppVersion appVersion=null;
-		appVersion=appVersionService.getAppVersionById(Integer.parseInt(vid));
+		AppInfo appInfo = null;	//app
+		appInfo=appService.getAppInfo(Integer.parseInt(aid),null);//得出app的信息
+		AppVersion appVersion=null;	//版本
+		appVersion=appVersionService.getAppVersionById(Integer.parseInt(vid));//得到版本信息
 		
 		model.addAttribute("appInfo", appInfo);
 		model.addAttribute("appVersion", appVersion);

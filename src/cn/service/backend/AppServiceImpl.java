@@ -37,9 +37,9 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	public AppInfo getAppInfo(Integer id) {
+	public AppInfo getAppInfo(Integer id,String APKName) {
 		// TODO Auto-generated method stub
-		return appInfoMapper.getAppInfo(id);
+		return appInfoMapper.getAppInfo(id,APKName);
 	}
 
 	@Override

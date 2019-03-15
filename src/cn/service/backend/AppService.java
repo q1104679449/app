@@ -48,7 +48,7 @@ public interface AppService {
 	 * @param APKName	apk√˚≥∆
 	 * @return
 	 */
-	public AppInfo getAppInfo(Integer id);
+	public AppInfo getAppInfo(Integer id,String APKName);
 	
 	/**
 	 * …Û∫Àapp
