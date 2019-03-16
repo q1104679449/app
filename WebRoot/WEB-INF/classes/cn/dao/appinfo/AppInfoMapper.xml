@@ -74,13 +74,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 		</trim>
 	</select>
-	<select id="getAppInfo" resultType="AppInfo" flushCache="true" useCache="true">
+	<select id="getAppInfo" resultType="AppInfo">
 		select *,
 		(select `valueName` from `data_dictionary` d where d.`valueId`=a.`status` and `typeCode`='APP_FLATFORM' ) flatformName,
 		(SELECT `valueName` FROM `data_dictionary` d WHERE d.`valueId`=a.`status` AND d.`typeCode`='APP_STATUS') AS statusName,
 		(select `categoryName` from `app_category` p where p.`id`=a.`categoryLevel1`) as categoryLevel1Name,
-		(SELECT `categoryName` FROM `app_category` p WHERE p.`id`=a.`categoryLevel2`) as categoryLeve21Name,
-		(SELECT `categoryName` FROM `app_category` p WHERE p.`id`=a.`categoryLevel3`) as categoryLeve31Name,
+		(SELECT `categoryName` FROM `app_category` p WHERE p.`id`=a.`categoryLevel2`) as categoryLevel2Name,
+		(SELECT `categoryName` FROM `app_category` p WHERE p.`id`=a.`categoryLevel3`) as categoryLevel3Name,
 		(SELECT v.`versionNo` FROM app_version v where v.`id`=a.`versionId`) as versionNo
 		from `app_info` a
 		<trim prefix="where" prefixOverrides="and | or">
@@ -100,5 +100,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  		`status` = #{status}
 		 where `id` = #{id}
 				
+	</update>
+	
+	<update id="updateAppVersion">
+		update 
+		  `app_info` 
+		set
+		  `status` = 1,
+		  `versionId` = #{vid} 
+		where `id` = #{appid}
 	</update>
 </mapper>

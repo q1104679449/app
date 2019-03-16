@@ -13,4 +13,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 		</trim>
 	</select>
+	
+	<select id="getAppVersionByAppId" resultType="AppVersion">
+		select v.*,
+		(SELECT a.`softwareName` FROM `app_info` a WHERE a.`id`=v.`appId`) as appName,
+		(SELECT d.`valueName` FROM `data_dictionary` d  WHERE d.`valueId`=v.`publishStatus` and d.`typeCode`='PUBLISH_STATUS') as publishStatusName
+		from
+		  `app_version` v
+		  <trim prefix="where" prefixOverrides="and | or">
+		  	<if test="appid != null">
+		  		and v.appid=#{appid}
+		  	</if>
+		  </trim>
+		order by v.`creationDate`desc
+		
+	</select>
+	
+	<insert id="addAppVersion" parameterType="AppVersion" useGeneratedKeys="true" keyProperty="id">
+		insert into `app_version` (`appId`,`versionNo`,`versionInfo`,`publishStatus`,`downloadLink`,`versionSize`,`createdBy`,`creationDate`,`apkLocPath`,`apkFileName`) 
+		values( #{appId},#{versionNo},#{versionInfo},3,#{downloadLink},#{versionSize},#{createdBy},#{creationDate},#{apkLocPath},#{apkFileName})
+	</insert>
 </mapper>

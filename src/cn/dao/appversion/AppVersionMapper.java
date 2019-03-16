@@ -14,5 +14,21 @@ public interface AppVersionMapper {
 	 * @return
 	 */
 	public AppVersion getAppVersionById(@Param("id")Integer id);
+	
+	
+	/**
+	 * 根据appid查询历史版本
+	 * @param appid
+	 * @return
+	 */
+	public List<AppVersion> getAppVersionByAppId(@Param("appid")Integer appid);
+	
+	/**
+	 * 根据实体添加版本信息
+	 * @param AppVersion
+	 * @return
+	 */
+	public int addAppVersion(AppVersion appVersion);
+	
 
 }

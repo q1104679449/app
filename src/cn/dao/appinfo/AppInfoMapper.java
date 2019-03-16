@@ -63,4 +63,11 @@ public interface AppInfoMapper {
 	 * 审核app
 	 */
 	public int updateSatus(@Param(value="status")Integer status,@Param(value="id")Integer id);
+	
+	/**
+	 * 根据版本id修改app信息最新版本id
+	 * @param aid
+	 * @return
+	 */
+	public int updateAppVersion(@Param("vid")Integer vid,@Param("appid")Integer appid);
 }

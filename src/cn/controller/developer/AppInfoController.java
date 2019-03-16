@@ -1,18 +1,26 @@
 package cn.controller.developer;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mysql.jdbc.StringUtils;
@@ -20,9 +28,11 @@ import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Appinfo;
 
 import cn.pojo.AppCategory;
 import cn.pojo.AppInfo;
+import cn.pojo.AppVersion;
 import cn.pojo.DataDictionary;
 import cn.pojo.DevUser;
 import cn.service.backend.AppService;
+import cn.service.backend.AppVersionService;
 import cn.service.developer.AppCategoryService;
 import cn.service.developer.AppInfoService;
 import cn.service.developer.DataDictionaryService;
@@ -41,6 +51,8 @@ public class AppInfoController {
 	private AppCategoryService appCategoryService;
 	@Resource
 	private AppService appService;
+	@Resource
+	private AppVersionService appVersionService;
 	
 	@RequestMapping(value="/list")
 	public String appInfoList(Model model,HttpSession session,
@@ -226,6 +238,95 @@ public class AppInfoController {
 		return JSONArray.toJSON(resultMap);
 	}
 	
+	
+	@RequestMapping(value="/appversionadd/{id}")
+	public String appversionadd(@PathVariable String id,Model model){
+		List<AppVersion> appVersions=null;
+		AppVersion appVersion=new AppVersion();
+		appVersions=appVersionService.getAppVersionByAppId(Integer.parseInt(id));
+		System.out.println(appVersions.get(0).getAppId());
+		Integer appId=appVersions.get(0).getAppId();
+		appVersion.setAppId(appId);
+		model.addAttribute("appVersion",appVersion);
+		model.addAttribute("appVersionList", appVersions);
+		return "developer/appversionadd";
+	}
+	@RequestMapping(value="/addversionsave",method=RequestMethod.POST)
+	public String addVersionSave(AppVersion appVersion,HttpSession session,HttpServletRequest request,@RequestParam String appIds,
+					@RequestParam(value="a_downloadLink",required=false)MultipartFile attach,
+					 Model model){
+		String downloadLink=null;
+		String apkLocPath=null;
+		String apkFileName=null;
+		String fileUploadError="";
+		Integer appId=null;
+		if(appIds!=null && !appIds.equals("")){
+			appId=Integer.parseInt(appIds);
+			appVersion.setAppId(appId);
+		}
+		if(!attach.isEmpty()){//不为空，则是文件
+			String path=request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles");
+			logger.info("uploadfiles path:"+path);
+			String oldFileName=attach.getOriginalFilename();//原文件名
+			String prefix=FilenameUtils.getExtension(oldFileName);//原文件后缀名
+			if(prefix.equalsIgnoreCase("apk")){//apk文件名：apk名称+版本号+.apk
+				String apkName=null;
+				
+				
+				try {
+					apkName=appService.getAppInfo(appId, null).getAPKName();
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+				if(apkName==null || apkName.equals("")){
+					model.addAttribute("fileUploadError",fileUploadError);
+					return "developer/appversionadd";
+				}
+				int filesize=1024*1024*100;
+				if(attach.getSize()>filesize){
+					model.addAttribute("fileUploadError", "上传文件不能大于100M");
+					return "developer/appversionadd";
+				}
+				apkFileName=apkName+"_"+appVersion.getVersionNo()+".apk";
+				File targetFile=new File(path,apkFileName);
+				if(!targetFile.exists()){
+					targetFile.mkdirs();
+				}
+				try {
+					attach.transferTo(targetFile);
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+					fileUploadError	= Constants.FILEUPLOAD_ERROR_2;
+					model.addAttribute("fileUploadError", fileUploadError);
+					return "developer/appversionadd";
+				}
+				downloadLink=request.getContextPath()+"/statics/uploadfiles/"+apkFileName;
+				apkLocPath=path+File.separator+apkName;
+			}else{
+				fileUploadError = Constants.FILEUPLOAD_ERROR_3;
+				model.addAttribute("fileUploadError", fileUploadError);
+				return "developer/appversionadd";
+			}
+		}
+		appVersion.setCreatedBy(((DevUser)session.getAttribute(Constants.DEV_USER_SESSION)).getId());
+		//SimpleDateFormat df=new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+		appVersion.setCreationDate(new Date());
+		appVersion.setDownloadLink(downloadLink);
+		appVersion.setApkLocPath(apkLocPath);
+		appVersion.setApkFileName(apkFileName);
+		if(appVersionService.addAppVersion(appVersion)>0){
+			return "redirect:/dev/flatform/app/list";
+		}
+		return "redirect:/dev/flatform/app/appversionadd/"+appVersion.getAppId();
+	}
+	@RequestMapping(value="/aaa")
+	public String aaa(@ModelAttribute("appVersion")AppVersion appVersion){
+		System.out.println("apkname:"+appVersion.getApkFileName());
+		System.out.println("appid:"+appVersion.getAppId());
+		return "redirect:/dev/flatform/app/list";
+	}
 	
 	
 

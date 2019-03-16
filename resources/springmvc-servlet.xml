@@ -90,7 +90,7 @@
 	
 	<!-- 配置MultioartResolver,用于文件上传 -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="maxUploadSize" value="5000000" />
+		<property name="maxUploadSize" value="5000000000000000" />
 		<property name="defaultEncoding" value="UTF-8"/>
 	</bean>
 </beans>
