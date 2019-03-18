@@ -56,4 +56,10 @@ public class AppVersionServiceImpl implements AppVersionService {
 		return num;
 	}
 
+	@Override
+	public int modfiy(AppVersion appVersion) {
+		// TODO Auto-generated method stub
+		return appVersionMapper.modify(appVersion);
+	}
+
 }

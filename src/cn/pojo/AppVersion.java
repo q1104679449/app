@@ -111,4 +111,18 @@ public class AppVersion {
 	public void setModifyDate(Date modifyDate) {
 		this.modifyDate = modifyDate;
 	}
+	@Override
+	public String toString() {
+		return "AppVersion [id=" + id + ", appId=" + appId + ", versionNo="
+				+ versionNo + ", versionInfo=" + versionInfo
+				+ ", publishStatus=" + publishStatus + ", downloadLink="
+				+ downloadLink + ", versionSize=" + versionSize
+				+ ", createdBy=" + createdBy + ", creationDate=" + creationDate
+				+ ", modifyBy=" + modifyBy + ", modifyDate=" + modifyDate
+				+ ", apkLocPath=" + apkLocPath + ", appName=" + appName
+				+ ", publishStatusName=" + publishStatusName + ", apkFileName="
+				+ apkFileName + "]";
+	}
+	
+	
 }

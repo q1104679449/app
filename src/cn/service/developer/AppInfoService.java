@@ -43,4 +43,35 @@ public interface AppInfoService {
 			Integer queryCategoryLevel3, Integer queryFlatformId, Integer devId);
 	
 	
+	/**
+	 * 添加app信息
+	 * @param appInfo
+	 * @return
+	 */
+	public int addAppInfo(AppInfo appInfo);
+	
+	
+	/**
+	 * 修改状态
+	 * @param appInfo
+	 * @return
+	 */
+	public boolean updateStatusByAppId(AppInfo appInfo);
+	
+	
+	/**
+	 * 修改
+	 * @param appInfo
+	 * @return
+	 */
+	public int modfi(AppInfo appInfo);
+	
+	/**
+	 * 删除appinfo
+	 * @param id
+	 * @return
+	 */
+	public boolean delAppInfo(Integer id);
+	
+	
 }

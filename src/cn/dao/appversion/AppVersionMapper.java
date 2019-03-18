@@ -30,5 +30,26 @@ public interface AppVersionMapper {
 	 */
 	public int addAppVersion(AppVersion appVersion);
 	
+	/**
+	 * 修改
+	 * @param appVersion
+	 * @return
+	 */
+	public int modify(AppVersion appVersion);
+	
+	/**
+	 * 查询跟appid相关的所有版本记录数
+	 * @param id
+	 * @return
+	 */
+	public int getCountByAppId(@Param("id")Integer id);
+	
+	/**
+	 * 删除与appid有关的版本信息
+	 * @param id
+	 * @return
+	 */
+	public int delByAppId(@Param("id")Integer id);
+	
 
 }

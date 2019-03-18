@@ -70,4 +70,26 @@ public interface AppInfoMapper {
 	 * @return
 	 */
 	public int updateAppVersion(@Param("vid")Integer vid,@Param("appid")Integer appid);
+	
+	
+	/**
+	 * 添加app信息
+	 * @param appInfo
+	 * @return
+	 */
+	public int addAppInfo(AppInfo appInfo);
+	
+	/**
+	 * 上架、下架
+	 * @param appInfo
+	 * @return
+	 */
+	public int modify(AppInfo appInfo);
+	
+	/**
+	 * 删除表信息
+	 * @param id
+	 * @return
+	 */
+	public int delById(@Param("id")Integer id);
 }

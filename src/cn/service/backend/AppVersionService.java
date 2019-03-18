@@ -26,5 +26,12 @@ public interface AppVersionService {
 	 * @param AppVersion
 	 * @return
 	 */
-	public int addAppVersion(@Param("AppVersion")AppVersion AppVersion);
+	public int addAppVersion(@Param("AppVersion")AppVersion appVersion);
+	
+	/**
+	 * ÐÞ¸Ä
+	 * @param appVersion
+	 * @return
+	 */
+	public int modfiy(AppVersion appVersion);
 }
